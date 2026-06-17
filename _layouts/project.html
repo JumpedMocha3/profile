@@ -1,0 +1,380 @@
+---
+layout: default
+---
+
+{% comment %}
+  Path resolution helper:
+  - If a path starts with '/', it is an absolute URL and is used as-is (old format).
+  - If it does NOT start with '/', it is relative to this project's folder (new format)
+    and page.url is prepended automatically.
+  Auto-discovery:
+  - When models/gallery/schematics are NOT listed in front matter, the layout
+    searches site.static_files for files inside this project's URL path.
+{% endcomment %}
+
+{% assign project_base = page.url %}
+
+{% comment %} ── FEATURED IMAGE ─────────────────────────────────────────────── {% endcomment %}
+{% if page.featured_image %}
+  {% assign _fi_first = page.featured_image | slice: 0 %}
+  {% if _fi_first == '/' %}
+    {% assign _featured_src = page.featured_image | relative_url %}
+  {% else %}
+    {% assign _featured_src = project_base | append: page.featured_image | relative_url %}
+  {% endif %}
+{% else %}
+  {% assign _featured_src = project_base | append: "featured.jpg" | relative_url %}
+{% endif %}
+
+{% comment %} ── MODELS (explicit front matter OR auto-discovered) ──────────── {% endcomment %}
+{% if page.models %}
+  {% assign _models = page.models %}
+  {% assign _models_auto = false %}
+{% else %}
+  {% assign _models_all = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/models/'" %}
+  {% assign _models = _models_all | where_exp: "f", "f.extname == '.gltf' or f.extname == '.glb'" %}
+  {% assign _models_auto = true %}
+{% endif %}
+
+{% comment %} ── GALLERY (explicit front matter OR auto-discovered) ─────────── {% endcomment %}
+{% if page.gallery %}
+  {% assign _gallery = page.gallery %}
+  {% assign _gallery_auto = false %}
+{% else %}
+  {% assign _gallery_extensions = "jpg,jpeg,png,gif,webp,mp4,webm,avi" | split: "," %}
+  {% assign _gallery = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/gallery/'" %}
+  {% assign _gallery_auto = true %}
+{% endif %}
+
+{% comment %} ── SCHEMATICS (explicit front matter OR auto-discovered) ──────── {% endcomment %}
+{% if page.schematics %}
+  {% assign _schematics = page.schematics %}
+  {% assign _schematics_auto = false %}
+{% else %}
+  {% assign _schematics = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/schematics/'" %}
+  {% assign _schematics_auto = true %}
+{% endif %}
+
+<div class="project-hero">
+    <div class="container">
+        <div class="project-header">
+            <h1 class="project-title">{{ page.title }}</h1>
+            <p class="project-description">{{ page.description }}</p>
+
+            <div class="project-meta">
+                {% if page.github_url %}
+                <a href="{{ page.github_url }}" class="btn-github" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+                {% endif %}
+
+                {% if page.demo_url %}
+                <a href="{{ page.demo_url }}" class="btn-demo" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Live Demo
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="project-content">
+    <div class="container">
+
+        <div class="project-header-simple">
+            <h1 class="project-title-simple">{{ page.title }}</h1>
+        </div>
+
+        <div class="project-split-layout">
+            <!-- Left Column: Text & Info -->
+            <div class="project-left-panel">
+
+                <!-- Overview / Description -->
+                <section class="project-section-clean" id="description">
+                    <h3>Overview</h3>
+                    <div class="project-description-content">
+                        <p class="project-lead">{{ page.description }}</p>
+                        {{ content }}
+                    </div>
+                </section>
+
+                <!-- Code Section (Collapsible) -->
+                {% if page.code_files %}
+                <section class="project-section-clean" id="code">
+                    <details class="code-details">
+                        <summary>Code Files</summary>
+                        <div class="code-list-container">
+                            {% for code_file in page.code_files %}
+                            <div class="code-file-wrapper">
+                                {% if code_file.content %}
+                                <details class="code-file-details">
+                                    <summary class="code-file-summary">
+                                        <span class="file-name"><i class="fas fa-code"></i> {{ code_file.name }}</span>
+                                        <div class="file-meta">
+                                            <span class="lang-tag">{{ code_file.language }}</span>
+                                            {% if code_file.download_url %}
+                                            <a href="{{ code_file.download_url }}" class="file-download-icon" download
+                                                title="Download"><i class="fas fa-download"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </summary>
+                                    <div class="code-block-content">
+                                        <pre><code class="language-{{ code_file.language }}">{{ code_file.content | escape }}</code></pre>
+                                    </div>
+                                </details>
+                                {% else %}
+                                <div class="code-file-item">
+                                    <i class="fas fa-code"></i> {{ code_file.name }}
+                                    {% if code_file.download_url %}
+                                    <a href="{{ code_file.download_url }}" download><i class="fas fa-download"></i></a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </details>
+                </section>
+                {% endif %}
+
+                <!-- Components & Materials -->
+                {% if page.components %}
+                <section class="project-section-clean" id="components" style="margin-top: var(--spacing-lg);">
+                    <h3>Components & Materials</h3>
+                    <table class="components-table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for component in page.components %}
+                            <tr>
+                                <td>{{ component.name }}</td>
+                                <td class="component-qty">{% if component.quantity %}x{{ component.quantity }}{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+                {% endif %}
+
+                <!-- Meta / Actions -->
+                <div class="project-meta-bottom">
+
+                    <div class="project-actions-small">
+                        {% if page.github_url %}
+                        <a href="{{ page.github_url }}" class="btn-small" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        {% endif %}
+
+                        {% if page.demo_url %}
+                        <a href="{{ page.demo_url }}" class="btn-small" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Demo
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="project-categories-bottom">
+                        {% for category in page.categories %}
+                        <span class="category-tag-small">{{ category }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Media -->
+            <div class="project-right-panel">
+
+                <!-- 3D Models Section -->
+                {% if _models.size > 0 %}
+                <section class="project-media-group" id="models">
+                    <div class="models-grid-compact">
+                        {% for model in _models %}
+                        {% comment %} Resolve path: auto-discovered static files have .path; front matter entries have .file {% endcomment %}
+                        {% if _models_auto %}
+                          {% assign _model_src = model.path | relative_url %}
+                          {% assign _model_desc = model.name %}
+                        {% else %}
+                          {% assign _mf_first = model.file | slice: 0 %}
+                          {% if _mf_first == '/' %}
+                            {% assign _model_src = model.file | relative_url %}
+                          {% else %}
+                            {% assign _model_src = project_base | append: model.file | relative_url %}
+                          {% endif %}
+                          {% assign _model_desc = model.description | default: page.title %}
+                        {% endif %}
+                        <div class="model-viewer-container">
+                            <model-viewer src="{{ _model_src }}"
+                                alt="{{ _model_desc }}" camera-controls
+                                auto-rotate="{{ site.models.auto_rotate | default: false }}"
+                                background-color="{{ site.models.default_background | default: '#f0f0f0' }}"
+                                shadow-intensity="1" class="model-viewer">
+                            </model-viewer>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Media Gallery -->
+                {% if _gallery.size > 0 %}
+                <section class="project-media-group" id="gallery">
+                    <div class="media-gallery-stack">
+                        {% for media in _gallery %}
+                        {% comment %} Resolve path and detect type {% endcomment %}
+                        {% if _gallery_auto %}
+                          {% assign _media_src = media.path | relative_url %}
+                          {% assign _media_ext = media.extname | remove: '.' | downcase %}
+                          {% assign _media_desc = media.name %}
+                        {% else %}
+                          {% assign _mf_first = media.file | slice: 0 %}
+                          {% if _mf_first == '/' %}
+                            {% assign _media_src = media.file | relative_url %}
+                          {% else %}
+                            {% assign _media_src = project_base | append: media.file | relative_url %}
+                          {% endif %}
+                          {% assign _media_ext = media.file | split: '.' | last | downcase %}
+                          {% assign _media_desc = media.description | default: page.title %}
+                        {% endif %}
+
+                        <div class="media-item">
+                            {% if _media_ext == 'mp4' or _media_ext == 'webm' or _media_ext == 'avi' %}
+                            <video controls class="gallery-video">
+                                <source src="{{ _media_src }}" type="video/{{ _media_ext }}">
+                                Your browser does not support the video tag.
+                            </video>
+                            {% else %}
+                            <img src="{{ _media_src }}"
+                                alt="{{ _media_desc }}" class="gallery-image" data-zoomable>
+                            {% endif %}
+                            {% unless _gallery_auto %}
+                            {% if media.description %}
+                            <p class="media-caption">{{ media.description }}</p>
+                            {% endif %}
+                            {% endunless %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Visualizations (Interactive HTML Plots) -->
+                {% if page.visualizations %}
+                <section class="project-media-group" id="visualizations">
+                    <h4 style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); border-bottom: 2px solid var(--accent-color); padding-bottom: var(--spacing-sm); margin: 0 0 var(--spacing-md) 0;">Data Visualizations</h4>
+                    <div class="visualizations-stack">
+                        {% for viz in page.visualizations %}
+                        {% assign _vf_first = viz.file | slice: 0 %}
+                        {% if _vf_first == '/' %}
+                          {% assign _viz_src = viz.file | relative_url %}
+                        {% else %}
+                          {% assign _viz_src = project_base | append: viz.file | relative_url %}
+                        {% endif %}
+                        <div class="visualization-item" style="margin-bottom: var(--spacing-lg); padding: var(--spacing-md); background: var(--surface-color); border-left: 4px solid var(--accent-color); border-radius: var(--radius-lg);">
+                            <h5 style="margin-top: 0; margin-bottom: var(--spacing-sm); font-size: 1rem; color: var(--text-primary); font-weight: 600; letter-spacing: 0.05em;">{{ viz.description }}</h5>
+                            <iframe src="{{ _viz_src }}"
+                                style="width: 100%; height: 600px; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                                title="{{ viz.description }}"></iframe>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Interactive Data Plot -->
+                {% if page.interactive_plot %}
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <div class="project-media-group">
+                    {% include interactive-plot.html %}
+                </div>
+                {% endif %}
+
+                <!-- Custom Plot Include -->
+                {% if page.custom_plot %}
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <div class="project-media-group">
+                    {% include {{ page.custom_plot }} %}
+                </div>
+                {% endif %}
+
+                <!-- Universal Plots (multiple CSV datasets) -->
+                {% if page.plots %}
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <div class="project-media-group">
+                    {% include universal-plot-handler.html %}
+                </div>
+                {% endif %}
+
+                <!-- Circuit Schematics -->
+                {% if _schematics.size > 0 %}
+                <section class="project-media-group" id="schematics">
+                    <h4>Schematics</h4>
+                    <div class="schematics-stack">
+                        {% for schematic in _schematics %}
+                        {% if _schematics_auto %}
+                          {% assign _sch_src = schematic.path | relative_url %}
+                          {% assign _sch_desc = schematic.name %}
+                        {% else %}
+                          {% assign _sf_first = schematic.file | slice: 0 %}
+                          {% if _sf_first == '/' %}
+                            {% assign _sch_src = schematic.file | relative_url %}
+                          {% else %}
+                            {% assign _sch_src = project_base | append: schematic.file | relative_url %}
+                          {% endif %}
+                          {% assign _sch_desc = schematic.description | default: 'Circuit Schematic' %}
+                        {% endif %}
+                        <div class="schematic-container">
+                            <img src="{{ _sch_src }}"
+                                alt="{{ _sch_desc }}"
+                                class="schematic-image">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                </section>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Navigation -->
+<div class="project-navigation">
+    <div class="container">
+        {% assign project_array = site.projects | sort: 'date' %}
+        {% for project in project_array %}
+        {% if project.url == page.url %}
+        {% assign current_index = forloop.index %}
+        {% break %}
+        {% endif %}
+        {% endfor %}
+
+        <div class="nav-links">
+            {% if current_index > 1 %}
+            {% assign prev_project = project_array[current_index | minus: 2] %}
+            <a href="{{ prev_project.url | relative_url }}" class="nav-link prev">
+                <i class="fas fa-chevron-left"></i>
+                <span>{{ prev_project.title }}</span>
+            </a>
+            {% endif %}
+
+            <a href="{{ '/projects/' | relative_url }}" class="nav-link all-projects">
+                <i class="fas fa-th"></i>
+                <span>All Projects</span>
+            </a>
+
+            {% if current_index < project_array.size %}
+            {% assign next_project = project_array[current_index] %}
+            <a href="{{ next_project.url | relative_url }}" class="nav-link next">
+                <span>{{ next_project.title }}</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
