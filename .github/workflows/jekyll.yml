@@ -53,6 +53,14 @@ jobs:
               values:
                 layout: "project"
 
+          navigation:
+            - title: "Home"
+              url: "/"
+            - title: "Projects"
+              url: "/projects/"
+            - title: "About"
+              url: "/about/"
+
           exclude:
             - Gemfile
             - Gemfile.lock
