@@ -41,6 +41,12 @@ permalink: /projects/
                         <img src="{{ _fi_src }}" 
                              alt="{{ project.title }}" 
                              class="project-image">
+                    {% elsif project.path contains 'index.md' or project.path contains 'index.markdown' %}
+                        {% assign _project_dir = project.path | remove: 'index.md' | remove: 'index.markdown' %}
+                        {% assign _fi_src = _project_dir | append: 'featured.jpg' | relative_url %}
+                        <img src="{{ _fi_src }}" 
+                             alt="{{ project.title }}" 
+                             class="project-image">
                     {% elsif project.models.first %}
                         {% assign _mf = project.models.first.file %}
                         {% assign _mf_first = _mf | slice: 0 %}
