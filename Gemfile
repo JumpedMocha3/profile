@@ -3,8 +3,8 @@ source "https://rubygems.org"
 # Jekyll version
 gem "jekyll", "~> 4.3.0"
 
-# GitHub Pages compatible gems
-gem "github-pages", group: :jekyll_plugins
+# Note: `github-pages` is omitted for local builds to avoid version conflicts.
+# If you need to use GitHub Pages gem, re-add it and run in an environment compatible with it.
 
 # Jekyll plugins
 group :jekyll_plugins do
@@ -20,6 +20,10 @@ platforms :mingw, :x64_mingw, :mswin, :jruby do
   gem "tzinfo", ">= 1", "< 3"
   gem "tzinfo-data"
 end
+
+# Ruby 3.4+ may require explicit csv gem
+gem "csv"
+gem "base64"
 
 # Performance-booster for watching directories on Windows
 gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]

@@ -22,65 +22,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fix Jekyll config and auto-detect project folders
+      - name: Generate project collection files from projects/
         run: |
-          cat > _config.yml <<'EOF'
-          title: "Zeyad - Mechatronics Engineer"
-          description: "A portfolio for all of my projects and achievements"
-          url: "https://elsadatm71-gif.github.io"
-          baseurl: "/Portfolio"
-
-          author: "Zeyad"
-          email: ""
-
-          markdown: kramdown
-          highlighter: rouge
-
-          plugins:
-            - jekyll-feed
-            - jekyll-sitemap
-            - jekyll-seo-tag
-
-          collections:
-            projects:
-              output: true
-              permalink: /projects/:name/
-
-          defaults:
-            - scope:
-                path: ""
-                type: "projects"
-              values:
-                layout: "project"
-
-          navigation:
-            - title: "Home"
-              url: "/"
-            - title: "Projects"
-              url: "/projects/"
-            - title: "About"
-              url: "/about/"
-
-          exclude:
-            - Gemfile
-            - Gemfile.lock
-            - node_modules
-            - vendor
-            - README.md
-          EOF
-
-          cat > Gemfile <<'EOF'
-          source "https://rubygems.org"
-
-          gem "jekyll", "~> 4.3"
-          gem "webrick"
-          gem "jekyll-feed"
-          gem "jekyll-sitemap"
-          gem "jekyll-seo-tag"
-          EOF
-
-          rm -f Gemfile.lock
-
+          # Do NOT overwrite repository _config.yml or Gemfile here.
           rm -rf _projects
           mkdir -p _projects
 

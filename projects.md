@@ -24,7 +24,8 @@ permalink: /projects/
         
         <!-- Projects Grid -->
         <div class="projects-grid" id="projects-grid">
-            {% for project in site.projects %}
+            {% assign project_pages = site.pages | where_exp: "p", "p.layout == 'project' and p.path contains 'projects/'" %}
+            {% for project in project_pages %}
             <article class="project-card" 
                      data-categories="{% for cat in project.categories %}{{ cat | slugify }} {% endfor %}">
                 
@@ -134,7 +135,7 @@ permalink: /projects/
             {% endfor %}
         </div>
         
-        {% if site.projects.size == 0 %}
+        {% if project_pages == empty %}
         <div class="no-projects">
             <div class="no-projects-content">
                 <i class="fas fa-robot"></i>
