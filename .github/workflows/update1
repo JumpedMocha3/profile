@@ -1,72 +1,68 @@
 name: Deploy Jekyll Site
 
 on:
-push:
-branches: ["main"]
-workflow_dispatch:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
-contents: read
-pages: write
-id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-group: "pages"
-cancel-in-progress: false
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-```
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  - name: Generate Projects Collection
-    run: |
-      rm -rf _projects
-      mkdir -p _projects
+      - name: Generate Projects Collection
+        run: |
+          rm -rf _projects
+          mkdir -p _projects
 
-      if [ -d "projects" ]; then
-        for project_dir in projects/*; do
-          if [ -d "$project_dir" ] && [ -f "$project_dir/index.md" ]; then
-            project_name=$(basename "$project_dir")
-            cp "$project_dir/index.md" "_projects/${project_name}.md"
+          if [ -d "projects" ]; then
+            for project_dir in projects/*; do
+              if [ -d "$project_dir" ] && [ -f "$project_dir/index.md" ]; then
+                project_name=$(basename "$project_dir")
+                cp "$project_dir/index.md" "_projects/${project_name}.md"
+              fi
+            done
           fi
-        done
-      fi
 
-  - name: Setup Ruby
-    uses: ruby/setup-ruby@v1
-    with:
-      ruby-version: '3.2'
-      bundler-cache: true
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.3'
+          bundler-cache: true
 
-  - name: Setup Pages
-    id: pages
-    uses: actions/configure-pages@v5
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
 
-  - name: Build with Jekyll
-    run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-    env:
-      JEKYLL_ENV: production
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
 
-  - name: Upload GitHub Pages Artifact
-    uses: actions/upload-pages-artifact@v3
-```
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-pages-artifact@v3
 
-deploy:
-environment:
-name: github-pages
-url: ${{ steps.deployment.outputs.page_url }}
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-```
-runs-on: ubuntu-latest
-needs: build
+    runs-on: ubuntu-latest
+    needs: build
 
-steps:
-  - name: Deploy to GitHub Pages
-    id: deployment
-    uses: actions/deploy-pages@v5
-```
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
