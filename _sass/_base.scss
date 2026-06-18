@@ -1,45 +1,25 @@
-/**
- * Base styles and CSS custom properties
- * MESGRO - Robotics & Mechatronics Portfolio Template
- */
 
-/* CSS Custom Properties */
 :root {
-  /* Colors - Light Theme (#143835 Palette Only) */
-  --primary-color: #143835;
-  --primary-dark: #12322f;
-  --secondary-color: #425f5d;
-  --accent-color: #2b4b49;
-
-  --background-color: #a1afae;
-  --surface-color: #899b9a;
-  --text-primary: #081615;
-  --text-secondary: #102c2a;
-  --text-muted: #425f5d;
-  --border-color: #728785;
-  --shadow-color: rgba(20, 56, 53, 0.10);
-  --shadow-hover: rgba(20, 56, 53, 0.18);
-
-  /* Full Brand Palette */
-  --green-900: #081615;
-  --green-800: #0a1c1a;
-  --green-700: #0c211f;
-  --green-600: #0e2725;
-  --green-500: #102c2a;
-  --green-400: #12322f;
-  --green-300: #143835;
-  --green-200: #2b4b49;
-  --green-100: #425f5d;
-  --green-75: #5a7371;
-  --green-50: #728785;
-  --green-25: #899b9a;
-  --green-10: #a1afae;
+  /* Colors - Light Theme (Bright Blue) */
+  --primary-color: #1565c0;
+  --primary-dark: #0d47a1;
+  --secondary-color: #42a5f5;
+  --accent-color: #64b5f6;
+  /* Bright Sky Blue */
+  --background-color: #ecf0f6;
+  --surface-color: #ffffff;
+  --text-primary: #0d1b2a;
+  --text-secondary: #37474f;
+  --text-muted: #607d8b;
+  --border-color: #90caf9;
+  --shadow-color: rgba(21, 101, 192, 0.1);
+  --shadow-hover: rgba(21, 101, 192, 0.15);
 
   /* Colors - Semantic */
-  --success-color: #143835;
-  --warning-color: #5a7371;
-  --error-color: #0c211f;
-  --info-color: #425f5d;
+  --success-color: #2d3436;
+  --warning-color: #c5a059;
+  --error-color: #a40000;
+  --info-color: #1a1a1b;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -102,32 +82,33 @@
   --z-tooltip: 1070;
 }
 
-/* Dark Theme (#143835 Palette Only) */
+/* Dark Theme (Deep Space with Soft Blue Accents) */
 [data-theme="dark"] {
-  --primary-color: #a1afae;
-  --primary-dark: #899b9a;
-  --secondary-color: #728785;
-  --accent-color: #5a7371;
-
-  --background-color: #081615;
-  --surface-color: #0a1c1a;
-  --text-primary: #a1afae;
-  --text-secondary: #899b9a;
-  --text-muted: #728785;
-  --border-color: #143835;
-  --shadow-color: rgba(20, 56, 53, 0.20);
-  --shadow-hover: rgba(20, 56, 53, 0.30);
+  --primary-color: #64b5f6;
+  --primary-dark: #90caf9;
+  --secondary-color: #42a5f5;
+  --accent-color: #5dade2;
+  --background-color: #1a2332;
+  --surface-color: #243447;
+  --text-primary: #e3f2fd;
+  --text-secondary: #b3d9f2;
+  --text-muted: #80b3d1;
+  --border-color: #3d5a7a;
+  --shadow-color: rgba(100, 181, 246, 0.2);
+  --shadow-hover: rgba(100, 181, 246, 0.3);
 
   /* Code Blocks - Dark */
-  --code-bg: #0c211f;
-  --code-text: #a1afae;
-  --code-border: #2b4b49;
+  --code-bg: #1e2936;
+  /* VS Code Dark style */
+  --code-text: #b3d9f2;
+  --code-border: #3d5a7a;
 }
 
 [data-theme="light"] {
-  --code-bg: #899b9a;
-  --code-text: #081615;
-  --code-border: #728785;
+  /* ... existing light variables ... */
+  --code-bg: #f5f5f5;
+  --code-text: #24292e;
+  --code-border: #e1e4e8;
 }
 
 /* Reset and Base Styles */
