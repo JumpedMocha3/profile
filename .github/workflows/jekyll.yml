@@ -27,11 +27,11 @@ jobs:
           cat > _config.yml <<'EOF'
           title: "Zeyad - Mechatronics Engineer"
           description: "A portfolio for all of my projects and achievements"
-          url: "https://elsadatm71-gif.github.io"
-          baseurl: "/Portfolio"
+          url: "https://github.com/JumpedMocha3"
+          baseurl: "/profile"
 
-          author: "Zeyad"
-          email: ""
+          author: "Zeyad Belal"
+          email: "ziad5203@gmail.com"
 
           markdown: kramdown
           highlighter: rouge
@@ -52,14 +52,6 @@ jobs:
                 type: "projects"
               values:
                 layout: "project"
-
-          navigation:
-            - title: "Home"
-              url: "/"
-            - title: "Projects"
-              url: "/projects/"
-            - title: "About"
-              url: "/about/"
 
           exclude:
             - Gemfile
