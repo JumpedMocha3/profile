@@ -8,7 +8,7 @@ permalink: /about/
     <div class="container">
         <h1 style="font-size: var(--font-size-3xl); letter-spacing: -0.02em; color: var(--text-primary);">About Me</h1>
         <p style="color: var(--text-secondary); opacity: 0.8; max-width: 700px; margin: 0 auto;">
-            Mechatronics Engineering student passionate about industrial automation, robotics, embedded systems, and autonomous technologies.
+            Mechatronics Engineer passionate about industrial automation, robotics, embedded systems, and autonomous technologies.
         </p>
     </div>
 </div>
@@ -19,14 +19,14 @@ permalink: /about/
         <section class="about-section">
             <h2>Who I Am</h2>
             <p>
-                I am <strong>Zeyad Mohamed Abbas Mohamed Belal</strong>, a Mechatronics Engineering student at 
+                I am <strong>Zeyad Mohamed Abbas Mohamed Belal</strong>, a Mechatronics Engineering graduate from 
                 <strong>Okan University</strong> in Istanbul, Turkey.
             </p>
 
             <p>
-                My interests focus on industrial automation, robotics, embedded systems, control systems, and autonomous technologies.
-                I enjoy designing and building complete engineering systems that combine mechanical design, electronics, programming,
-                and automation into practical real-world solutions.
+                My interests focus on industrial automation, robotics, embedded systems, control systems, computer vision,
+                and autonomous technologies. I enjoy designing and building complete engineering systems that combine
+                mechanical design, electronics, programming, and automation into practical real-world solutions.
             </p>
         </section>
 
@@ -38,10 +38,10 @@ permalink: /about/
                 <p>
                     <strong>Okan University</strong>, Istanbul, Turkey
                     <br>
-                    Expected Graduation: <strong>October 2026</strong>
+                    Graduated: <strong>2026</strong>
                 </p>
                 <p>
-                    Relevant coursework includes mechatronics systems, microcontrollers, control systems,
+                    Relevant coursework included mechatronics systems, microcontrollers, control systems,
                     embedded programming, sensors, and actuators.
                 </p>
             </div>
@@ -97,17 +97,22 @@ permalink: /about/
 
                 <div class="perfect-for-item">
                     <h4>Embedded Systems</h4>
-                    <p>ESP32, Arduino, STM32, Embedded C, Sensor Integration, Motor Control</p>
+                    <p>ESP32, Arduino, STM32, STM32CubeIDE, Embedded C, Sensor Integration, Motor Control</p>
                 </div>
 
                 <div class="perfect-for-item">
                     <h4>Programming</h4>
-                    <p>Python, C, Embedded C, Ladder Logic</p>
+                    <p>Python, C, Embedded C, Ladder Logic, MATLAB</p>
                 </div>
 
                 <div class="perfect-for-item">
                     <h4>CAD & Design</h4>
                     <p>SolidWorks, AutoCAD, 3D Modeling, Assembly Design, Flow Simulation</p>
+                </div>
+
+                <div class="perfect-for-item">
+                    <h4>Engineering Software</h4>
+                    <p>MATLAB, STM32CubeIDE, Microsoft Office Suite, Arduino IDE</p>
                 </div>
 
             </div>
@@ -117,13 +122,13 @@ permalink: /about/
             <h2>Current Focus</h2>
 
             <p>
-                I am currently expanding my expertise in industrial automation through practical training in PLC programming,
-                HMI/SCADA systems, motor drives, and factory simulation environments.
+                I am focused on developing my engineering skills in industrial automation, embedded systems,
+                robotics, control systems, and system integration.
             </p>
 
             <p>
-                Alongside my studies, I am developing autonomous robotic systems and improving my skills in embedded systems,
-                computer vision, mechanical design, and full system integration.
+                My work combines mechanical design, electronics, programming, automation, and practical problem solving
+                to build complete mechatronic and robotic systems.
             </p>
         </section>
 
@@ -143,7 +148,22 @@ permalink: /about/
 
                 <div class="tech-item">
                     <i class="fas fa-microchip"></i>
+                    <span>STM32CubeIDE</span>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fas fa-microchip"></i>
                     <span>Arduino IDE</span>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>MATLAB</span>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fas fa-file-word"></i>
+                    <span>Microsoft Office</span>
                 </div>
 
                 <div class="tech-item">
