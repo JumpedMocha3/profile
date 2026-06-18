@@ -1,8 +1,8 @@
 # Site settings
-title: "MESGRO - Robotics & Mechatronics Portfolio"
+title: "Zeyad Belal Robotics & Mechatronics Portfolio"
 description: "An open-source template for showcasing robotics and mechatronics projects with 3D models, schematics, and code"
-url: "https://aojedao.github.io"
-baseurl: "/MESGRO"
+url: "https://JumpedMocha3.github.io"
+baseurl: "/profile"
 author: "Zeyad Belal"
 email: "ziad5203@gmail.com"
 github_username: "JumpedMocha3"
