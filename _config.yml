@@ -3,11 +3,10 @@ title: "MESGRO - Robotics & Mechatronics Portfolio"
 description: "An open-source template for showcasing robotics and mechatronics projects with 3D models, schematics, and code"
 url: "https://aojedao.github.io"
 baseurl: "/MESGRO"
-author: "Your Name"
-email: "your.email@example.com"
-github_username: "your-github-username"
-linkedin_username: "your-linkedin"
-twitter_username: "your-twitter"
+author: "Zeyad Belal"
+email: "ziad5203@gmail.com"
+github_username: "JumpedMocha3"
+linkedin_username: "Zeyad Belal"
 
 # Build settings
 markdown: kramdown
