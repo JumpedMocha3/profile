@@ -13,6 +13,7 @@ layout: default
 {% endcomment %}
 
 {% assign project_base = page.url %}
+{% assign project_path = project_base | remove_first: '/' | remove_last: '/' %}
 {% assign project_dir = page.path | remove: 'index.md' | remove: 'index.markdown' %}
 
 {% comment %} ── FEATURED IMAGE ─────────────────────────────────────────────── {% endcomment %}
@@ -32,7 +33,7 @@ layout: default
   {% assign _models = page.models %}
   {% assign _models_auto = false %}
 {% else %}
-  {% assign _models_all = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/models/'" %}
+  {% assign _models_all = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/models/'" %}
   {% assign _models = _models_all | where_exp: "f", "f.extname == '.gltf' or f.extname == '.glb'" %}
   {% assign _models_auto = true %}
 {% endif %}
@@ -43,7 +44,7 @@ layout: default
   {% assign _gallery_auto = false %}
 {% else %}
   {% assign _gallery_extensions = "jpg,jpeg,png,gif,webp,mp4,webm,avi" | split: "," %}
-  {% assign _gallery = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/gallery/'" %}
+  {% assign _gallery = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/gallery/'" %}
   {% assign _gallery_auto = true %}
 {% endif %}
 
@@ -52,8 +53,26 @@ layout: default
   {% assign _schematics = page.schematics %}
   {% assign _schematics_auto = false %}
 {% else %}
-  {% assign _schematics = site.static_files | where_exp: "f", "f.path contains project_base and f.path contains '/schematics/'" %}
+  {% assign _schematics = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/schematics/'" %}
   {% assign _schematics_auto = true %}
+{% endif %}
+
+{% comment %} ── DIAGRAMS (explicit front matter OR auto-discovered) ─────────── {% endcomment %}
+{% if page.diagrams %}
+  {% assign _diagrams = page.diagrams %}
+  {% assign _diagrams_auto = false %}
+{% else %}
+  {% assign _diagrams = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/diagrams/'" %}
+  {% assign _diagrams_auto = true %}
+{% endif %}
+
+{% comment %} ── DATA FILES (explicit front matter OR auto-discovered) ───────── {% endcomment %}
+{% if page.data_files %}
+  {% assign _data_files = page.data_files %}
+  {% assign _data_files_auto = false %}
+{% else %}
+  {% assign _data_files = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/data/'" %}
+  {% assign _data_files_auto = true %}
 {% endif %}
 
 <div class="project-hero">
@@ -104,7 +123,7 @@ layout: default
                   {% assign _code_files = page.code_files %}
                   {% assign _code_files_auto = false %}
                 {% else %}
-                  {% assign _code_files = site.static_files | where_exp: "f", "f.path contains project_dir and f.path contains '/code/'" %}
+                  {% assign _code_files = site.static_files | where_exp: "f", "f.path contains project_path and f.path contains '/code/'" %}
                   {% assign _code_files_auto = true %}
                 {% endif %}
 
@@ -143,6 +162,42 @@ layout: default
                             {% endfor %}
                         </div>
                     </details>
+                </section>
+                {% endif %}
+
+                {% if _diagrams.size > 0 %}
+                <section class="project-section-clean" id="diagrams">
+                    <h3>Technical Diagrams</h3>
+                    <div class="diagram-list">
+                        {% for diagram in _diagrams %}
+                        {% assign diagram_src = diagram.path | relative_url %}
+                        {% assign diagram_ext = diagram.extname | remove: '.' | downcase %}
+                        <div class="project-diagram-item">
+                            {% if diagram_ext == 'png' or diagram_ext == 'jpg' or diagram_ext == 'jpeg' or diagram_ext == 'webp' or diagram_ext == 'svg' %}
+                            <div class="diagram-preview">
+                                <img src="{{ diagram_src }}" alt="{{ diagram.name }}">
+                            </div>
+                            {% endif %}
+                            <div class="diagram-link">
+                                <a href="{{ diagram_src }}" target="_blank" rel="noopener">{{ diagram.name }}</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if _data_files.size > 0 %}
+                <section class="project-section-clean" id="data">
+                    <h3>Data Files</h3>
+                    <ul class="data-file-list">
+                        {% for data_file in _data_files %}
+                        <li>
+                            <i class="fas fa-database"></i>
+                            <a href="{{ data_file.path | relative_url }}" download>{{ data_file.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </section>
                 {% endif %}
 

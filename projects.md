@@ -24,7 +24,7 @@ permalink: /projects/
         
         <!-- Projects Grid -->
         <div class="projects-grid" id="projects-grid">
-            {% assign project_pages = site.pages | where_exp: "p", "p.layout == 'project' and p.path contains 'projects/'" %}
+            {% assign project_pages = site.pages | where_exp: "p", "p.layout == 'project'" %}
             {% for project in project_pages %}
             <article class="project-card" 
                      data-categories="{% for cat in project.categories %}{{ cat | slugify }} {% endfor %}">
