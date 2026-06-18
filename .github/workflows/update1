@@ -1,197 +1,179 @@
-name: Deploy Jekyll Site
+name: Deploy Fixed Portfolio
 
 on:
-push:
-branches: ["main"]
-workflow_dispatch:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
-contents: read
-pages: write
-id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-group: "pages"
-cancel-in-progress: false
+  group: "pages-fixed"
+  cancel-in-progress: true
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-```
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  - name: Generate Projects Collection From New Projects Folder
-    run: |
-      rm -rf _projects
-      mkdir -p _projects
+      - name: Fix Jekyll config and auto-detect project folders
+        run: |
+          cat > _config.yml <<'EOF'
+          title: "Zeyad Belal - Mechatronics Engineer"
+          description: "A portfolio for my robotics, mechatronics, embedded systems, and automation projects"
+          url: "https://jumpedmocha3.github.io"
+          baseurl: "/profile"
 
-      if [ -d "projects" ]; then
-        for project_dir in projects/*; do
-          if [ -d "$project_dir" ] && [ -f "$project_dir/index.md" ]; then
-            project_name=$(basename "$project_dir")
-            output_file="_projects/${project_name}.md"
+          author: "Zeyad Belal"
+          email: "ziad5203@gmail.com"
+          github_username: "JumpedMocha3"
+          linkedin_username: "zeyad-belal"
 
-            awk -v project_name="$project_name" '
-              BEGIN { front=0; inserted=0 }
+          markdown: kramdown
+          highlighter: rouge
 
-              NR==1 && $0=="---" {
-                print
-                front=1
-                next
-              }
+          plugins:
+            - jekyll-feed
+            - jekyll-sitemap
+            - jekyll-seo-tag
 
-              front==1 && $0=="---" && inserted==0 {
-                print "project_folder: \"/projects/" project_name "\""
-                print "featured_image: \"/projects/" project_name "/featured.jpg\""
-                print "---"
-                front=0
-                inserted=1
-                next
-              }
+          collections:
+            projects:
+              output: true
+              permalink: /projects/:name/
 
-              { print }
-            ' "$project_dir/index.md" > "$output_file"
+          defaults:
+            - scope:
+                path: ""
+                type: "projects"
+              values:
+                layout: "project"
+            - scope:
+                path: ""
+                type: "posts"
+              values:
+                layout: "post"
 
-            {
-              echo ""
-              echo "<!-- Auto-discovered project assets -->"
-              echo ""
+          navigation:
+            - title: "Home"
+              url: "/"
+            - title: "Projects"
+              url: "/projects/"
+            - title: "About"
+              url: "/about/"
 
-              if [ -d "$project_dir/gallery" ]; then
-                echo "## Gallery"
-                echo ""
-                for file in "$project_dir"/gallery/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    ext="${filename##*.}"
-                    ext_lower=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+          project_categories:
+            - name: "Robotics"
+              slug: "robotics"
+              description: "Autonomous robots and robotic systems"
+            - name: "Mechatronics"
+              slug: "mechatronics"
+              description: "Integration of mechanical, electrical, and software systems"
+            - name: "Arduino"
+              slug: "arduino"
+              description: "Arduino-based projects and prototypes"
+            - name: "3D Printing"
+              slug: "3d-printing"
+              description: "Custom 3D printed components and designs"
+            - name: "IoT"
+              slug: "iot"
+              description: "Internet of Things devices and applications"
 
-                    case "$ext_lower" in
-                      jpg|jpeg|png|webp|gif)
-                        echo "![${filename}]({{ '/projects/${project_name}/gallery/${filename}' | relative_url }})"
-                        echo ""
-                        ;;
-                      mp4|webm|mov)
-                        echo "<video controls style=\"width:100%; max-width:900px; margin:20px 0; border-radius:12px;\">"
-                        echo "  <source src=\"{{ '/projects/${project_name}/gallery/${filename}' | relative_url }}\" type=\"video/${ext_lower}\">"
-                        echo "</video>"
-                        echo ""
-                        ;;
-                    esac
-                  fi
-                done
+          models:
+            supported_formats: ["stl", "obj", "gltf", "glb"]
+            default_background: "#f0f0f0"
+            camera_controls: true
+            auto_rotate: false
+
+          schematics:
+            supported_formats: ["png", "jpg", "jpeg", "svg", "pdf"]
+            zoom_enabled: true
+            pan_enabled: true
+
+          exclude:
+            - Gemfile
+            - Gemfile.lock
+            - node_modules
+            - vendor
+            - vendor/bundle/
+            - vendor/cache/
+            - vendor/gems/
+            - vendor/ruby/
+            - README.md
+            - LICENSE
+          EOF
+
+          cat > Gemfile <<'EOF'
+          source "https://rubygems.org"
+
+          gem "jekyll", "~> 4.3"
+          gem "webrick"
+          gem "jekyll-feed"
+          gem "jekyll-sitemap"
+          gem "jekyll-seo-tag"
+          EOF
+
+          rm -f Gemfile.lock
+
+          rm -rf _projects
+          mkdir -p _projects
+
+          if [ -d "projects" ]; then
+            for project_dir in projects/*; do
+              if [ -d "$project_dir" ] && [ -f "$project_dir/index.md" ]; then
+                project_name=$(basename "$project_dir")
+                output_file="_projects/${project_name}.md"
+
+                awk -v project_name="$project_name" '
+                  BEGIN { front=0; done=0 }
+                  NR==1 && $0=="---" { print; front=1; next }
+                  front==1 && $0=="---" && done==0 {
+                    print "featured_image: \"/projects/" project_name "/featured.jpg\""
+                    print "project_folder: \"/projects/" project_name "\""
+                    print "---"
+                    front=0
+                    done=1
+                    next
+                  }
+                  { print }
+                ' "$project_dir/index.md" > "$output_file"
               fi
-
-              if [ -d "$project_dir/schematics" ]; then
-                echo "## Schematics"
-                echo ""
-                for file in "$project_dir"/schematics/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    echo "![${filename}]({{ '/projects/${project_name}/schematics/${filename}' | relative_url }})"
-                    echo ""
-                  fi
-                done
-              fi
-
-              if [ -d "$project_dir/diagrams" ]; then
-                echo "## Diagrams"
-                echo ""
-                for file in "$project_dir"/diagrams/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    echo "![${filename}]({{ '/projects/${project_name}/diagrams/${filename}' | relative_url }})"
-                    echo ""
-                  fi
-                done
-              fi
-
-              if [ -d "$project_dir/models" ]; then
-                echo "## 3D Models"
-                echo ""
-                for file in "$project_dir"/models/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    ext="${filename##*.}"
-                    ext_lower=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
-
-                    case "$ext_lower" in
-                      glb|gltf)
-                        echo "<model-viewer src=\"{{ '/projects/${project_name}/models/${filename}' | relative_url }}\" camera-controls auto-rotate style=\"width:100%; height:500px;\"></model-viewer>"
-                        echo ""
-                        ;;
-                      stl|obj)
-                        echo "[Download 3D Model: ${filename}]({{ '/projects/${project_name}/models/${filename}' | relative_url }})"
-                        echo ""
-                        ;;
-                    esac
-                  fi
-                done
-              fi
-
-              if [ -d "$project_dir/code" ]; then
-                echo "## Code Files"
-                echo ""
-                for file in "$project_dir"/code/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    echo "- [${filename}]({{ '/projects/${project_name}/code/${filename}' | relative_url }})"
-                  fi
-                done
-                echo ""
-              fi
-
-              if [ -d "$project_dir/data" ]; then
-                echo "## Data Files"
-                echo ""
-                for file in "$project_dir"/data/*; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    echo "- [${filename}]({{ '/projects/${project_name}/data/${filename}' | relative_url }})"
-                  fi
-                done
-                echo ""
-              fi
-
-            } >> "$output_file"
-
+            done
           fi
-        done
-      fi
 
-  - name: Setup Ruby
-    uses: ruby/setup-ruby@v1
-    with:
-      ruby-version: '3.2.3'
-      bundler-cache: true
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.3'
+          bundler-cache: true
 
-  - name: Setup Pages
-    id: pages
-    uses: actions/configure-pages@v5
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
 
-  - name: Build with Jekyll
-    run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-    env:
-      JEKYLL_ENV: production
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
 
-  - name: Upload GitHub Pages Artifact
-    uses: actions/upload-pages-artifact@v3
-```
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
 
-deploy:
-environment:
-name: github-pages
-url: ${{ steps.deployment.outputs.page_url }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
-```
-runs-on: ubuntu-latest
-needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-steps:
-  - name: Deploy to GitHub Pages
-    id: deployment
-    uses: actions/deploy-pages@v5
-```
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
