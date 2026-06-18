@@ -13,6 +13,7 @@ layout: default
 {% endcomment %}
 
 {% assign project_base = page.url %}
+{% assign project_dir = page.path | remove: 'index.md' | remove: 'index.markdown' %}
 
 {% comment %} ── FEATURED IMAGE ─────────────────────────────────────────────── {% endcomment %}
 {% if page.featured_image %}
@@ -98,15 +99,23 @@ layout: default
                     </div>
                 </section>
 
-                <!-- Code Section (Collapsible) -->
+                {% comment %} ── CODE FILES (explicit front matter OR auto-discovered) ─────── {% endcomment %}
                 {% if page.code_files %}
+                  {% assign _code_files = page.code_files %}
+                  {% assign _code_files_auto = false %}
+                {% else %}
+                  {% assign _code_files = site.static_files | where_exp: "f", "f.path contains project_dir and f.path contains '/code/'" %}
+                  {% assign _code_files_auto = true %}
+                {% endif %}
+
+                {% if _code_files and _code_files.size > 0 %}
                 <section class="project-section-clean" id="code">
                     <details class="code-details">
                         <summary>Code Files</summary>
                         <div class="code-list-container">
-                            {% for code_file in page.code_files %}
+                            {% for code_file in _code_files %}
                             <div class="code-file-wrapper">
-                                {% if code_file.content %}
+                                {% if code_file.content and _code_files_auto == false %}
                                 <details class="code-file-details">
                                     <summary class="code-file-summary">
                                         <span class="file-name"><i class="fas fa-code"></i> {{ code_file.name }}</span>
@@ -123,11 +132,11 @@ layout: default
                                     </div>
                                 </details>
                                 {% else %}
+                                {% assign code_file_ext = code_file.extname | remove: '.' | downcase %}
+                                {% assign code_file_download = code_file.path | relative_url %}
                                 <div class="code-file-item">
                                     <i class="fas fa-code"></i> {{ code_file.name }}
-                                    {% if code_file.download_url %}
-                                    <a href="{{ code_file.download_url }}" download><i class="fas fa-download"></i></a>
-                                    {% endif %}
+                                    <a href="{{ code_file_download }}" download><i class="fas fa-download"></i></a>
                                 </div>
                                 {% endif %}
                             </div>

@@ -107,10 +107,11 @@ permalink: /projects/
                             </span>
                         {% endif %}
                         
-                        {% if project.code_files %}
+                        {% assign project_code_files = site.static_files | where_exp: "f", "f.path contains project.url and f.path contains '/code/'" %}
+                        {% if project.code_files or project_code_files.size > 0 %}
                             <span class="feature-badge" title="Code Files">
                                 <i class="fas fa-code"></i>
-                                {{ project.code_files.size }}
+                                {% if project.code_files %}{{ project.code_files.size }}{% else %}{{ project_code_files.size }}{% endif %}
                             </span>
                         {% endif %}
                         
