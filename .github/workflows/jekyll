@@ -25,15 +25,13 @@ jobs:
       - name: Fix Jekyll config and auto-detect project folders
         run: |
           cat > _config.yml <<'EOF'
-          title: "Zeyad Belal - Mechatronics Engineer"
-          description: "A portfolio for my robotics, mechatronics, embedded systems, and automation projects"
-          url: "https://jumpedmocha3.github.io"
-          baseurl: "/profile"
+          title: "Zeyad - Mechatronics Engineer"
+          description: "A portfolio for all of my projects and achievements"
+          url: "https://elsadatm71-gif.github.io"
+          baseurl: "/Portfolio"
 
-          author: "Zeyad Belal"
-          email: "ziad5203@gmail.com"
-          github_username: "JumpedMocha3"
-          linkedin_username: "zeyad-belal"
+          author: "Zeyad"
+          email: ""
 
           markdown: kramdown
           highlighter: rouge
@@ -54,11 +52,6 @@ jobs:
                 type: "projects"
               values:
                 layout: "project"
-            - scope:
-                path: ""
-                type: "posts"
-              values:
-                layout: "post"
 
           navigation:
             - title: "Home"
@@ -68,45 +61,12 @@ jobs:
             - title: "About"
               url: "/about/"
 
-          project_categories:
-            - name: "Robotics"
-              slug: "robotics"
-              description: "Autonomous robots and robotic systems"
-            - name: "Mechatronics"
-              slug: "mechatronics"
-              description: "Integration of mechanical, electrical, and software systems"
-            - name: "Arduino"
-              slug: "arduino"
-              description: "Arduino-based projects and prototypes"
-            - name: "3D Printing"
-              slug: "3d-printing"
-              description: "Custom 3D printed components and designs"
-            - name: "IoT"
-              slug: "iot"
-              description: "Internet of Things devices and applications"
-
-          models:
-            supported_formats: ["stl", "obj", "gltf", "glb"]
-            default_background: "#f0f0f0"
-            camera_controls: true
-            auto_rotate: false
-
-          schematics:
-            supported_formats: ["png", "jpg", "jpeg", "svg", "pdf"]
-            zoom_enabled: true
-            pan_enabled: true
-
           exclude:
             - Gemfile
             - Gemfile.lock
             - node_modules
             - vendor
-            - vendor/bundle/
-            - vendor/cache/
-            - vendor/gems/
-            - vendor/ruby/
             - README.md
-            - LICENSE
           EOF
 
           cat > Gemfile <<'EOF'
@@ -130,12 +90,11 @@ jobs:
                 project_name=$(basename "$project_dir")
                 output_file="_projects/${project_name}.md"
 
-                awk -v project_name="$project_name" '
+                awk '
                   BEGIN { front=0; done=0 }
                   NR==1 && $0=="---" { print; front=1; next }
                   front==1 && $0=="---" && done==0 {
-                    print "featured_image: \"/projects/" project_name "/featured.jpg\""
-                    print "project_folder: \"/projects/" project_name "\""
+                    print "featured_image: \"featured.jpg\""
                     print "---"
                     front=0
                     done=1
